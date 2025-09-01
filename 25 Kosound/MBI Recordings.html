@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> MBI Recordings</title>
+  <style>
+    :root {
+      --bg: #414042;
+      --card-bg: #14141a;
+      --text: #eaeaea;
+      --muted: #b8b8c2;
+      --radius: 16px;
+      --gap: 16px;
+      --shadow: 0 10px 24px rgba(0,0,0,.35);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: radial-gradient(1200px 600px at 20% -20%, #1b1b28 0%, #0b0b0f 60%) no-repeat,
+                  radial-gradient(1000px 500px at 120% 20%, #191926 0%, #0b0b0f 60%) no-repeat,
+                  var(--bg);
+      color: var(--text);
+      font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Noto Sans KR, Helvetica, Arial;
+      min-height: 100dvh;
+      padding: 32px;
+    }
+    header { max-width: 1100px; margin: 0 auto 16px auto; }
+    h1 { font-size: 24px; margin: 0 0 8px 0; }
+    p.lead { margin: 0; color: var(--muted); }
+    .grid {
+      max-width: 1100px;
+      margin: 24px auto 48px auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: var(--gap);
+    }
+    .card {
+      position: relative;
+      aspect-ratio: 2 / 3; /* poster shape */
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--card-bg);
+      box-shadow: var(--shadow);
+      transform: translateZ(0);
+    }
+    .card a {
+      position: absolute; inset: 0; display: block; outline: none; text-decoration: none;
+    }
+    .card img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center;
+      transition: transform .25s ease;
+      display: block;
+      filter: saturate(1.02) contrast(1.02);
+    }
+    .overlay {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 14px;
+      color: white;
+      background: linear-gradient(to top, rgba(0,0,0,.78), rgba(0,0,0,.35) 55%, rgba(0,0,0,0));
+      opacity: 0;
+      transform: scale(1.02);
+      transition: opacity .18s ease, transform .18s ease;
+      pointer-events: none; /* keep clicks going to the link */
+    }
+    .overlay .title { font-size: 18px; font-weight: 700; letter-spacing: .2px; }
+    .overlay .meta { font-size: 13px; color: #dadada; opacity: .9; margin-top: 6px; }
+    .overlay .tags { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag {
+      font-size: 12px; padding: 2px 8px; border-radius: 999px; background: rgba(255,255,255,.14);
+      backdrop-filter: blur(1px);
+    }
+    /* Hover / focus enlarge + info */
+    .card:hover img,
+    .card:has(a:focus-visible) img,
+    .card.preview img { transform: scale(1.08); }
+    .card:hover .overlay,
+    .card:has(a:focus-visible) .overlay,
+    .card.preview .overlay { opacity: 1; transform: scale(1); }
+    /* Keyboard focus ring */
+    .card a:focus-visible { outline: 3px solid #7aa2ff; outline-offset: 2px; border-radius: var(--radius); }
+    /* Optional caption under card */
+    .caption {
+      position: absolute; left: 10px; top: 10px;
+      background: rgba(0,0,0,.5); color: #fff; font-size: 12px;
+      padding: 2px 6px; border-radius: 6px;
+    }
+    /* Mobile fallback: show overlay on first tap before opening link */
+    @media (hover: none) and (pointer: coarse) {
+      /* no changes needed; JS below will handle the 1st tap preview */
+    }
+    footer {
+      max-width: 1100px; margin: 0 auto; color: var(--muted); font-size: 13px;
+    }
+    code { background: #16161d; padding: 2px 6px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>MBI Recordings</h1>
+    <p class="lead">포스터에 마우스를 올리면 정보가 표시되고, 클릭하면 영상 링크가 열립니다.</p>
+  </header>
+
+  <main class="grid" id="posterGrid">
+    <div class="card">
+      <a href="https://digital.sac.or.kr/contents/PXGEHyHZANk9" target="_blank" rel="noopener">
+        <img src="images/poster-a.png" alt="공연 A 포스터">
+        <div class="overlay">
+          <div class="title"><2025 예술의전당 교향악축제> 경기필하모닉오케스트라</div>
+          <div class="meta">2025</div>
+          <div class="tags">
+            <span class="tag">Mastering</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="card">
+      <a href="https://digital.sac.or.kr/contents/PDkGQa9nsN2b" target="_blank" rel="noopener">
+        <img src="images/poster-b.png" alt="공연 B 포스터">
+        <div class="overlay">
+          <div class="title">비킹구르 올라프손 피아노 리사이틀</div>
+          <div class="meta">2023</div>
+          <div class="tags">
+            <span class="tag">Live Mix</span><span class="tag">Pre Production</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="card">
+      <a href="https://digital.sac.or.kr/contents/PDoMDgQXVsBV" target="_blank" rel="noopener">
+        <img src="images/poster-c.png" alt="공연 C 포스터">
+        <div class="overlay">
+          <div class="title">테오팀 랑글로아 드 스와르테 & 쥐스탱 테일러 듀오 콘서트</div>
+          <div class="meta">2024</div>
+          <div class="tags">
+            <span class="tag">Recording</span></span><span class="tag">Post-Production</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="card">
+      <a href="https://digital.sac.or.kr/contents/PN69U517RE3S" target="_blank" rel="noopener">
+        <img src="images/poster-d-1.png" alt="공연 D 포스터">
+        <div class="overlay">
+          <div class="title">경기필하모닉오케스트라 마스터즈 시리즈 5 <버르토크 관현악을 위한 협주곡></div>
+          <div class="meta">2024</div>
+          <div class="tags">
+            <span class="tag">Recording</span></span><span class="tag">Post-Production</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="card">
+      <a href="https://digital.sac.or.kr/contents/PNMxYV3UEZNU" target="_blank" rel="noopener">
+        <img src="images/poster-d-2.png" alt="공연 D-2 포스터">
+        <div class="overlay">
+          <div class="title"<영축총림 통도사ⅹ아벨콰르텟>CULTURAL HERITAGE CONCERT</div>
+          <div class="meta">2024</div>
+          <div class="tags">
+            <span class="tag">Recording</span></span><span class="tag">Post-Production</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="card">
+      <a href="https://digital.sac.or.kr/contents/PvbZohfwOKTo" target="_blank" rel="noopener">
+        <img src="images/poster-e.png" alt="공연 E 포스터">
+        <div class="overlay">
+          <div class="title">경기필하모닉오케스트라 마스터즈 시리즈 4 <슈트라우스 영웅의 생애></div>
+          <div class="meta">2024</div>
+          <div class="tags">
+            <span class="tag">Recording</span></span><span class="tag">Post-Production</span>
+          </div>
+        </div>
+      </a>
+    </div>    
+
+    <div class="card">
+      <a href="https://digital.sac.or.kr/contents/PBD2CWwECaaV" target="_blank" rel="noopener">
+        <img src="images/poster-f.png" alt="공연 f 포스터">
+        <div class="overlay">
+          <div class="title">2021 윤보선 고택 쌀롱콘서트</div>
+          <div class="meta">2021</div>
+          <div class="tags">
+            <span class="tag">Recording</span></span><span class="tag">Post-Production</span>
+          </div>
+        </div>
+      </a>
+    </div>    
+
+    <div class="card">
+      <a href="https://digital.sac.or.kr/contents/PAjpJ5exKWzT" target="_blank" rel="noopener">
+        <img src="images/poster-g.png" alt="공연 g 포스터">
+        <div class="overlay">
+          <div class="title">크리스티안 테츨라프 무반주 리사이틀</div>
+          <div class="meta">2023</div>
+          <div class="tags">
+            <span class="tag">Recording</span></span><span class="tag">Post-Production</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="card">
+      <a href="https://digital.sac.or.kr/contents/PN4OztFPUswL" target="_blank" rel="noopener">
+        <img src="images/poster-h.png" alt="공연 h 포스터">
+        <div class="overlay">
+          <div class="title">티에리 위에의 어린 왕자</div>
+          <div class="meta">2024</div>
+          <div class="tags">
+            <span class="tag">Recording</span></span><span class="tag">Post-Production</span>
+          </div>
+        </div>
+      </a>
+    </div>
+    
+    <div class="card">
+      <a href="https://digital.sac.or.kr/contents/PeX8fPa4t1Hp" target="_blank" rel="noopener">
+        <img src="images/poster-i.png" alt="공연 I 포스터">
+        <div class="overlay">
+          <div class="title">경기필하모닉오케스트라 마스터즈 시리즈 1 <베토벤 교향곡 3번></div>
+          <div class="meta">2024</div>
+          <div class="tags">
+            <span class="tag">Recording</span></span><span class="tag">Post-Production</span>
+          </div>
+        </div>
+      </a>
+    </div>    
+
+    <div class="card">
+      <a href="https://digital.sac.or.kr/contents/PqAqCsimtTxw" target="_blank" rel="noopener">
+        <img src="images/poster-j.png" alt="공연 J 포스터">
+        <div class="overlay">
+          <div class="title">미클로시 페레니 & 피닌 콜린스 듀오 콘서트 Ⅱ</div>
+          <div class="meta">2023</div>
+          <div class="tags">
+            <span class="tag">Recording</span></span><span class="tag">Post-Production</span>
+          </div>
+        </div>
+      </a>
+    </div>    
+
+    <div class="card">
+      <a href="https://digital.sac.or.kr/contents/Pe8FgBpU96oV" target="_blank" rel="noopener">
+        <img src="images/poster-k.png" alt="공연 K 포스터">
+        <div class="overlay">
+          <div class="title">조진주&김규연 듀오 콘서트</div>
+          <div class="meta">2023</div>
+          <div class="tags">
+            <span class="tag">Recording</span></span><span class="tag">Post-Production</span>
+          </div>
+        </div>
+      </a>
+    </div>    
+
+    <div class="card">
+      <a href="https://digital.sac.or.kr/contents/PtXL0ixMyhSj" target="_blank" rel="noopener">
+        <img src="images/poster-l.png" alt="공연 L 포스터">
+        <div class="overlay">
+          <div class="title">미클로시 페레니 & 피닌 콜린스 듀오 콘서트 Ⅰ</div>
+          <div class="meta">2023</div>
+          <div class="tags">
+            <span class="tag">Recording</span></span><span class="tag">Post-Production</span>
+          </div>
+        </div>
+      </a>
+    </div>    
+
+    <div class="card">
+      <a href="https://digital.sac.or.kr/contents/PiNI03cQdmNM" target="_blank" rel="noopener">
+        <img src="images/poster-m.png" alt="공연 M 포스터">
+        <div class="overlay">
+          <div class="title">지젤</div>
+          <div class="meta">2014</div>
+          <div class="tags">
+            <span class="tag">Recording</span></span><span class="tag">Post-Production</span>
+          </div>
+        </div>
+      </a>
+    </div>    
+
+    <div class="card">
+      <a href="https://digital.sac.or.kr/contents/PQN2jk1lMWnO" target="_blank" rel="noopener">
+        <img src="images/poster-n.png" alt="공연 N 포스터">
+        <div class="overlay">
+          <div class="title">라 바야데르</div>
+          <div class="meta">2015</div>
+          <div class="tags">
+            <span class="tag">Recording</span></span><span class="tag">Post-Production</span>
+          </div>
+        </div>
+      </a>
+    </div>    
+
+  </main>
+
+  <footer>
+    <p><strong>©Media Bridge International</strong>   좋은 하루 되시길 바랍니다. :)</p>
+  </footer>
+
+  <script>
+    // 모바일/터치 환경: 첫 탭은 미리보기(overlay 표시), 두 번째 탭은 링크 열기
+    (function() {
+      const supportsHover = window.matchMedia && window.matchMedia('(hover: hover)').matches;
+      if (supportsHover) return; // 데스크톱은 CSS hover로 처리
+
+      document.querySelectorAll('.card a').forEach(a => {
+        a.addEventListener('click', function(e) {
+          const card = a.closest('.card');
+          if (!card.classList.contains('preview')) {
+            e.preventDefault();
+            card.classList.add('preview');
+            // 2초 내에 아무 것도 안 하면 미리보기 상태 해제
+            clearTimeout(card._timer);
+            card._timer = setTimeout(() => card.classList.remove('preview'), 2000);
+          } else {
+            // 두 번째 탭은 정상적으로 링크 오픈 (기본 동작)
+            card.classList.remove('preview');
+          }
+        }, { passive: false });
+      });
+    })();
+  </script>
+</body>
+</html>
